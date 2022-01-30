@@ -5,5 +5,37 @@
     "README.end2.e.md"
   ],
   "imageSize": 100,
-  "commit": false
+  "commit": false,
+  "projectName": "mockserver",
+  "projectOwner": "AntonioSun",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true,
+  "contributors": [
+    {
+      "login": "AntonioSun",
+      "name": "AntonioSun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2840074?v=4",
+      "profile": "https://github.com/AntonioSun",
+      "contributions": [
+        "code",
+        "ideas",
+        "design",
+        "data",
+        "test",
+        "bug",
+        "doc",
+        "blog",
+        "example",
+        "tutorial",
+        "tool",
+        "platform",
+        "review",
+        "question",
+        "maintenance",
+        "infra"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
 }
