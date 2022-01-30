@@ -1,4 +1,4 @@
-module github.com/Ananto30/mocker
+module github.com/AntonioSun/mockserver
 
 go 1.14
 
