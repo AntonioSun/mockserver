@@ -7,13 +7,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"reflect"
 )
 
 var respMap RespMap
 
 func ParseMockJson(file string) error {
-	jsonFile, err := os.Open(file)
+	jsonFile, err := os.Open(filepath.Clean(file))
 	if err != nil {
 		return err
 	}
