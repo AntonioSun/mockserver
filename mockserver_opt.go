@@ -5,6 +5,17 @@ package main
 //////////////////////////////////////////////////////////////////////////
 // Constant and data type/structure definitions
 
+/*
+
+Custom environment settings:
+
+- **MS_ADDR**: Server address (string="localhost:7070")
+- **MS_COMPRESS**: Enable transparent response compression (bool)
+- **MS_FILE**: Mock json file location (string="mock.json")
+- **MS_VERBOSE**: Verbose mode (higher numbers increase the verbosity) (int="1")
+
+*/
+
 type envConfig struct {
 	Addr     string `env:"MS_ADDR" envDefault:"localhost:7070"` // Server address
 	Compress bool   `env:"MS_COMPRESS"`                         // Enable transparent response compression

@@ -14,6 +14,7 @@ mock server to replace the Java/NPM counterpart mockserver
 ## TOC
 - [mockserver - super slim & blazing fast mock server](#mockserver---super-slim-&-blazing-fast-mock-server)
 - [Run](#run)
+  - [Verbosity](#verbosity)
 - [Sample mock.json file](#sample-mockjson-file)
 - [Build](#build)
 - [Install Debian/Ubuntu package](#install-debianubuntu-package)
@@ -34,19 +35,67 @@ With defaults -
 ```bash
 ./mockserver
 ```
-**Defaults: `addr=localhost:7070` , `file=mock.json`**
+**Defaults: `MS_ADDR=localhost:7070 MS_FILE=mock.json MS_VERBOSE=1`**
 
 
-With custom flags - 
+With custom settings - 
 ```bash
-./mockserver -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
+export MS_ADDR=<YOUR_HOST_AND_PORT> MS_FILE=<MOCK_JSON_FILE_LOCATION>
+MS_VERBOSE=2 ./mockserver
 ```
 
+Full list of custom environment settings:
 
-For windows - 
-```powershell
-mockserver.exe -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
+- **MS_ADDR**: Server address (string="localhost:7070")
+- **MS_COMPRESS**: Enable transparent response compression (bool)
+- **MS_FILE**: Mock json file location (string="mock.json")
+- **MS_VERBOSE**: Verbose mode (higher numbers increase the verbosity) (int="1")
+
+### Verbosity
+
+The default verbosity setting is `MS_VERBOSE=1`. It'll print all available paths on program start:
+
+``` bash
+$ mockserver
+] {Addr:localhost:7070 Compress:false File:mock.json Verbose:1}
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+Available paths: 
+=> /login
+=> /api/books/234/comments
+=> /api/books/234
+=> /api/books
+=> /api/authors/523
+Starting server on localhost:7070
 ```
+
+To suspense the printing of available paths on program start, set `MS_VERBOSE=0`:
+
+``` bash
+$ MS_VERBOSE=0 mockserver
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+Starting server on localhost:7070
+^C
+```
+
+When verbosity is `2`, it'll print a log of all requesting paths:
+
+``` bash
+$ MS_VERBOSE=2 mockserver
+] {Addr:localhost:7070 Compress:false File:mock.json Verbose:2}
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+Available paths: 
+=> /login
+=> /api/books/234/comments
+=> /api/books/234
+=> /api/books
+=> /api/authors/523
+Starting server on localhost:7070
+2022/01/30 16:27:28 /login
+```
+
 
 ## Sample mock.json file
 
@@ -109,7 +158,7 @@ Notes:
 
 - The mock file defines the rules that determine how the server should respond to a request.
 - We use a rule-based system to match requests to responds. Therefore, you have to organize them from most restrictive to least. 
-- **The request type [POST or GET] doesn't matter.**
+- *The request type [POST or GET] doesn't matter.*
 
 ## Build
 For mac/linux - 
@@ -134,9 +183,6 @@ GOOS=windows GOARCH=amd64 go build
 - The latest binary executables are available 
 as the result of the Continuous-Integration (CI) process.
 - I.e., they are built automatically right from the source code at every git release by [GitHub Actions](https://docs.github.com/en/actions).
-- There are two ways to get/install such binary executables
-  * Using the **binary executables** directly, or
-  * Using **packages** for your distro
 
 ### The binary executables
 
