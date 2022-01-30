@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"log"
 	"github.com/caarlos0/env"
 	"github.com/valyala/fasthttp"
 )
@@ -13,10 +12,11 @@ import (
 ////////////////////////////////////////////////////////////////////////////
 // Global variables definitions
 var (
-        progname  = "mockserver"
-        version   = "1.0.1"
-        date = "2022-01-30"
-        e envConfig
+	progname = "mockserver"
+	version  = "1.0.1"
+	date     = "2022-01-30"
+
+	e envConfig
 )
 
 func main() {
