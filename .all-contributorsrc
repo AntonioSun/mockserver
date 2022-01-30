@@ -35,6 +35,21 @@
         "maintenance",
         "infra"
       ]
+    },
+    {
+      "login": "Ananto30",
+      "name": "Ananto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15931537?v=4",
+      "profile": "https://ananto.netlify.app/",
+      "contributions": [
+        "code",
+        "ideas",
+        "design",
+        "data",
+        "test",
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7
