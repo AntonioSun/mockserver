@@ -1,6 +1,8 @@
 // mock server to replace the Java/NPM counterpart mockserver
 package main
 
+//go:generate sh mockserver_cli.sh
+
 import (
 	"fmt"
 	"log"

@@ -23,3 +23,4 @@ Options:
   - Name: Verbose
     Type: int
     Usage: Verbose mode (higher numbers increase the verbosity)
+    Value: 1
