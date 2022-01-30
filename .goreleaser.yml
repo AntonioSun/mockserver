@@ -1,0 +1,31 @@
+project_name: mockserver
+
+archives:
+  - format: tar.gz
+    wrap_in_directory: true
+    format_overrides:
+      - goos: windows
+        format: zip
+    # remove README and LICENSE
+    files:
+      - mock.json
+
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+nfpms:
+- maintainer: Antonio Sun
+  description: super slim & blazing fast mock server
+  homepage: https://github.com/AntonioSun/mockserver
+  license: MIT
+  formats:
+  - deb
+  - rpm
+  - apk
