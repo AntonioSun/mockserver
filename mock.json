@@ -26,22 +26,25 @@
     }
   },
   {
-    "httpRequest": {
-      "method": "GET",
-      "path": "/api/books",
-      "queryStringParameters": {
-        "limit": [ "[0-9]+" ]
+    "httpRequest" : {
+      "method": "POST",
+      "path" : "/api/books/234/comments",
+      "headers": {
+        "Content-Type": ["application/json"]
       },
       "cookies": {
         "sessionId" : "055CA455-1DF7-45BB-8535-4F83E7266092"
       }
     },
-    "httpResponse": {
-      "body": "[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]",
-      "delay": {
-        "timeUnit": "MILLISECONDS",
-        "value": 750
-      }
+    "httpResponse" : {
+      "statusCode": 200,
+      "body": "{\"Success\": True}"
+    },
+    "times": {
+      "unlimited": true
+    },
+    "timeToLive": {
+      "unlimited": true
     }
   },
   {
@@ -65,19 +68,17 @@
       "method": "GET",
       "path": "/api/books",
       "queryStringParameters": {
-        "limit": [ "[0-9]+" ],
-        "search": [ "[A-Za-z0-9 ]+"],
-        "trackId": [ "[0-9+"]
+        "limit": [ "[0-9]+" ]
       },
       "cookies": {
         "sessionId" : "055CA455-1DF7-45BB-8535-4F83E7266092"
       }
     },
     "httpResponse": {
-      "statusCode": 200,
+      "body": "[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]",
       "delay": {
         "timeUnit": "MILLISECONDS",
-        "value": 800
+        "value": 750
       }
     }
   },
@@ -95,27 +96,6 @@
         "timeUnit": "MILLISECONDS",
         "value": 500
       }
-    }
-  },
-  {
-    "httpRequest" : {
-      "method": "POST",
-      "path" : "/api/books/234/comments",
-      "headers": {
-        "Content-Type": ["application/json"]
-      },
-      "cookies": {
-        "sessionId" : "055CA455-1DF7-45BB-8535-4F83E7266092"
-      }
-    },
-    "httpResponse" : {
-      "statusCode": 200
-    },
-    "times": {
-      "unlimited": true
-    },
-    "timeToLive": {
-      "unlimited": true
     }
   }
 ]
