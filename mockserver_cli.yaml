@@ -1,0 +1,25 @@
+PackageName: main
+
+Name: mockserver
+
+# prefix string before every environment variable
+Prefix: MS_
+
+Options:
+  - Name: Addr
+    Type: string
+    Usage: Server address
+    Value: localhost:7070
+
+  - Name: Compress
+    Type: bool
+    Usage: Enable transparent response compression
+
+  - Name: File
+    Type: string
+    Usage: Mock json file location
+    Value: mock.json
+
+  - Name: Verbose
+    Type: int
+    Usage: Verbose mode (higher numbers increase the verbosity)
