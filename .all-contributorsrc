@@ -50,6 +50,16 @@
         "doc",
         "example"
       ]
+    },
+    {
+      "login": "smicyk",
+      "name": "smicyk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14974939?v=4",
+      "profile": "https://github.com/smicyk",
+      "contributions": [
+        "data",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
