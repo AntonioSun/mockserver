@@ -53,6 +53,9 @@ func checkFieldPresent(i interface{}, key, fName string) error {
 }
 
 func printPaths() {
+	if e.Verbose < 1 {
+		return
+	}
 	fmt.Println("Available paths: ")
 	for _, k := range respMap {
 		fmt.Println("=>", k.HTTPRequest.Path)

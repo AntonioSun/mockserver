@@ -2,22 +2,32 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 
+	"log"
+	"github.com/caarlos0/env"
 	"github.com/valyala/fasthttp"
 )
 
+////////////////////////////////////////////////////////////////////////////
+// Global variables definitions
 var (
-	addr     = flag.String("addr", "localhost:7070", "TCP address to listen to")
-	compress = flag.Bool("compress", false, "Whether to enable transparent response compression")
-	file     = flag.String("file", "mock.json", "Location of mock json file")
+        progname  = "mockserver"
+        version   = "1.0.1"
+        date = "2022-01-30"
+        e envConfig
 )
 
 func main() {
-	flag.Parse()
-	err := ParseMockJson(*file)
+	// == Config handling
+	err := env.Parse(&e)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//fmt.Printf("] %+v\n", e)
+
+	err = ParseMockJson(e.File)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,13 +38,13 @@ func main() {
 	printPaths()
 
 	h := requestHandler
-	if *compress {
+	if e.Compress {
 		h = fasthttp.CompressHandler(h)
 	}
 
-	fmt.Println("Starting server on", *addr)
+	fmt.Println("Starting server on", e.Addr)
 
-	err = fasthttp.ListenAndServe(*addr, h)
+	err = fasthttp.ListenAndServe(e.Addr, h)
 	if err != nil {
 		panic(err)
 	}

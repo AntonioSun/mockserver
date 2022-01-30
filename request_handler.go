@@ -17,7 +17,9 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	path := string(ctx.Path())
 	for _, k := range respMap {
 		if path == k.HTTPRequest.Path {
-			log.Println(path)
+			if e.Verbose >= 2 {
+				log.Println(path)
+			}
 			ctx.Response.Header.SetCanonical(strContentType, strApplicationJSON)
 
 			statusCode := k.HTTPResponse.StatusCode
