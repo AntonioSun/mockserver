@@ -5,64 +5,89 @@
 
 Run a blazing fast mock server in just seconds! 🚀
 
-All you need is to make a json file that contains path and response mapping. See an example [here](https://github.com/Ananto30/mocker#sample-mockjson-file).
-
-*Only json is supported for now, please create issues for bugs and new features.*
+All you need is to make a json file that contains request and response mapping. See an example [here](#sample-mockjson-file).
 
 ## Run
 With defaults - 
 ```bash
-./mocker
+./mockserver
 ```
 **Defaults: `addr=localhost:7070` , `file=mock.json`**
 
 
 With custom flags - 
 ```bash
-./mocker -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
+./mockserver -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
 ```
 
 
 For windows - 
 ```powershell
-mocker.exe -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
+mockserver.exe -addr <YOUR_HOST_AND_PORT> -file <MOCK_JSON_FILE_LOCATION>
 ```
 
 ## Sample mock.json file
-```
-{
-  "<YOUR_PATH>": {
-    "statusCode": <INTEGER>,
-    "responseBody": {
-      <YOUR_RESPONSE_BODY> ...
-    }
-  }
-}
-```
-These `path`s will be matched and the json will be sent. 
+
 
 Example - 
 ```json
-{
-  "/hello/worlds": {
-    "statusCode": 200,
-    "responseBody": {
-      "message": "Hello worlds!",
-      "data" : {
-        "time": "now"
+[
+  {
+    "httpRequest" : {
+      "method": "POST",
+      "path" : "/login",
+      "headers": {
+        "Content-Type": ["application/x-www-form-urlencoded; charset=UTF-8"]
       },
-      "worlds": [
-        "cross origin world",
-        "mars world",
-        "moon world"
-      ]
+      "body": {
+        "type": "STRING",
+        "string": "username=john&password=john",
+        "contentType" : "application/x-www-form-urlencoded; charset=UTF-8"
+      }
+    },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/api/books",
+      "queryStringParameters": {
+        "limit": [ "[0-9]+" ]
+      },
+      "cookies": {
+        "sessionId" : "055CA455-1DF7-45BB-8535-4F83E7266092"
+      }
+    },
+    "httpResponse": {
+      "body": "[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]",
+      "delay": {
+        "timeUnit": "MILLISECONDS",
+        "value": 750
+      }
     }
   }
-}
+]
 ```
-If a request lands in the server in path `/hello/worlds` the json object inside `responseBody` will be sent as response.
 
-**The request type [POST or GET] doesn't matter.**
+These `httpRequest.path`s will be matched and the response will be sent. E.g., if a request lands in the server in path `/api/books` the json object inside `httpResponse.body` will be sent as response. The full sample is available [here](https://github.com/AntonioSun/mockserver/blob/main/mock.json), and here is how it works:
+
+``` sh
+curl -X POST -d "username=john&password=john" localhost:7070/login
+<html><head><meta name=\"trackId\" content=\"19293921933\"></head><body></body</html>
+
+$ curl -L localhost:7070/api/books
+"[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]"
+
+$ curl -L localhost:7070/api/books/234
+"{\"id\": 234, \"title\": \"Book number 234\", \"author\": {\"id\": 523, \"name\": \"Author Name\"}}"
+
+$ curl -L localhost:7070/api/authors/523
+"{\"id\": 523, \"name\": \"Author Name\", \"bio\": \"Author bio\"}"
+```
+
+Notes:
+
+- The mock file defines the rules that determine how the server should respond to a request.
+- We use a rule-based system to match requests to responds. Therefore, you have to organize them from most restrictive to least. 
+- **The request type [POST or GET] doesn't matter.**
 
 ## Build
 For mac/linux - 
