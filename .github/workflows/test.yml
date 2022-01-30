@@ -1,0 +1,38 @@
+on: [push, pull_request]
+name: Test
+jobs:
+  Build:
+    strategy:
+      matrix:
+        go-version: [1.14.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go-version }}
+    - name: Fetch Repository
+      uses: actions/checkout@v2
+
+    - name: Create issue using REST API
+      run: |
+        echo curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "title": "Automated issue for commit: ${{ github.sha }}",
+          "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_."
+          }'
+
+    - name: Run Test
+      env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+          git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}".insteadOf "https://github.com/${GITHUB_REPOSITORY}"
+          #cat ${HOME}/.gitconfig
+          go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
+          #go env | grep AntonioSun
+          #go get -v ./...
+          go test -v -race
