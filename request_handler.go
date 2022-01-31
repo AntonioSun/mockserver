@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"reflect"
 	"regexp"
@@ -35,7 +36,10 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 			}
 			ctx.Response.SetStatusCode(statusCode)
 
-			if err := json.NewEncoder(ctx).Encode(k.HTTPResponse.Body); err != nil {
+			if regexp.MustCompile(`(?i)text/html;`).MatchString(contentType) {
+				// directly write to body
+				fmt.Fprintf(ctx, k.HTTPResponse.Body)
+			} else if err := json.NewEncoder(ctx).Encode(k.HTTPResponse.Body); err != nil {
 				ctx.Error(err.Error(), fasthttp.StatusInternalServerError)
 			}
 
