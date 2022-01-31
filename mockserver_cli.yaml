@@ -20,6 +20,10 @@ Options:
     Usage: Mock json file location
     Value: mock.json
 
+  - Name: Restrict
+    Type: int
+    Usage: "Restriction level (default: relaxed)"
+
   - Name: Verbose
     Type: int
     Usage: Verbose mode (higher numbers increase the verbosity)
