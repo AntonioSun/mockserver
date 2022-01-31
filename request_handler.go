@@ -4,22 +4,39 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"reflect"
 	"regexp"
 
 	"github.com/valyala/fasthttp"
 )
 
+////////////////////////////////////////////////////////////////////////////
+// Constant and data type/structure definitions
+
+type ipResponse struct {
+	Origin string `json:"origin"`
+}
+
+////////////////////////////////////////////////////////////////////////////
+// Global variables definitions
+
 var (
 	strContentType     = []byte("Content-Type")
 	strApplicationJSON = "application/json"
 )
 
+////////////////////////////////////////////////////////////////////////////
+// Function definitions
+
 func requestHandler(ctx *fasthttp.RequestCtx) {
 	path := string(ctx.Path())
 	for _, k := range respMap {
 		if path == k.HTTPRequest.Path {
-			if e.Verbose >= 2 {
+			if e.Verbose >= 3 {
+				h, _, _ := net.SplitHostPort(ctx.RemoteAddr().String())
+				log.Printf("%s (%s)", path, h)
+			} else if e.Verbose >= 2 {
 				log.Println(path)
 			}
 			contentType := k.HTTPRequest.Body.ContentType

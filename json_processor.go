@@ -34,7 +34,9 @@ func ParseMockJson(file string) error {
 		return err
 	}
 	fmt.Println("✔ Successfully parsed:", file)
-	//fmt.Printf("] %+v\n", respMap)
+	if e.Verbose >= 3 {
+		fmt.Printf("] %+v\n", respMap)
+	}
 
 	return nil
 }
