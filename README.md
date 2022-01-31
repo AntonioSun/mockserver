@@ -15,6 +15,7 @@ mock server to replace the Java/NPM counterpart mockserver
 - [mockserver - super slim & blazing fast mock server](#mockserver---super-slim-&-blazing-fast-mock-server)
 - [Run](#run)
   - [Verbosity](#verbosity)
+  - [Restriction level](#restriction-level)
 - [Sample mock.json file](#sample-mockjson-file)
 - [Build](#build)
 - [Install Debian/Ubuntu package](#install-debianubuntu-package)
@@ -26,16 +27,21 @@ mock server to replace the Java/NPM counterpart mockserver
 
 ## mockserver - super slim & blazing fast mock server
 
-Run a blazing fast mock server in just seconds! 🚀
+Run a super slim and blazing fast mock server in just seconds! 🚀
 
-All you need is to make a json file that contains request and response mapping. See an example [here](#sample-mockjson-file).
+- How small is it? The executable is only ~6M in size.
+- How fast is it (the Go fasthttp framework)? It's up to [10x faster](https://golangrepo.com/repo/valyala-fasthttp-go-network) than the default Go net/http package, [6~7 times](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=plaintext) faster than `nodejs`, and [38x faster](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=plaintext) than Java `httpserver`.
+
+It can be used to stress test the stress-testing tools, even when they run in distributed multi-node mode. It helps to answer questions like what would the bottlenecks be when JMeter testing is running from a single node, or doubled, or tripled, etc? Therefore, the delay-responding will not likely be implemented in this tool, as there are so many tools out there already doing the throttling.
+
+Now you can have a mock server that itself is not the bottleneck. All you need, is to make a json file that contains request and response mapping. See an example [here](#sample-mockjson-file).
 
 ## Run
 With defaults - 
 ```bash
 ./mockserver
 ```
-**Defaults: `MS_ADDR=localhost:7070 MS_FILE=mock.json MS_VERBOSE=1`**
+**Defaults: `MS_ADDR=localhost:7070 MS_FILE=mock.json MS_VERBOSE=1 MS_RESTRICT=0`**
 
 
 With custom settings - 
@@ -49,6 +55,7 @@ Full list of custom environment settings:
 - **MS_ADDR**: Server address (string="localhost:7070")
 - **MS_COMPRESS**: Enable transparent response compression (bool)
 - **MS_FILE**: Mock json file location (string="mock.json")
+- **MS_RESTRICT**: Restriction level (default: relaxed, only request's path will be matched) (int)
 - **MS_VERBOSE**: Verbose mode (higher numbers increase the verbosity) (int="1")
 
 ### Verbosity
@@ -96,6 +103,28 @@ Starting server on localhost:7070
 2022/01/30 16:27:28 /login
 ```
 
+With verbosity being `3`, the `mock.json` input is dumped in Go internal format, and the IP of the requesting is logged on console as well:
+
+```shell
+$ MS_VERBOSE=3 mockserver
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+] [{HTTPRequest:{Headers:{ContentType:[application/x-www-form-urlencoded; charset=UTF-8]} Method:POST Path:/login QueryStringParameters:map[] Cookies:map[] Body:{Type:STRING String:username=john&password=john ContentType:application/x-www-form-urlencoded; charset=UTF-8}} HTTPResponse:{StatusCode:0 Body:<html><head><meta name="trackId" content="19293921933"></head><body></body</html> Cookies:map[sessionId:055CA455-1DF7-45BB-8535-4F83E7266092]}} {HTTPRequest:{Headers:{ContentType:[application/json]} Method:POST Path:/api/books/234/comments QueryStringParameters:map[] Cookies:map[sessionId:055CA455-1DF7-45BB-8535-4F83E7266092] Body:{Type: String: ContentType:}} HTTPResponse:{StatusCode:200 Body:{"Success": True} Cookies:map[]}} {HTTPRequest:{Headers:{ContentType:[]} Method:GET Path:/api/books/234 QueryStringParameters:map[] Cookies:map[sessionId:055CA455-1DF7-45BB-8535-4F83E7266092] Body:{Type: String: ContentType:}} HTTPResponse:{StatusCode:0 Body:{"id": 234, "title": "Book number 234", "author": {"id": 523, "name": "Author Name"}} Cookies:map[]}} {HTTPRequest:{Headers:{ContentType:[]} Method:GET Path:/api/books QueryStringParameters:map[limit:[[0-9]+]] Cookies:map[sessionId:055CA455-1DF7-45BB-8535-4F83E7266092] Body:{Type: String: ContentType:}} HTTPResponse:{StatusCode:0 Body:[{"id": 234, "title": "Book number 234"},{"id": 432, "title": "Book number 432"}] Cookies:map[]}} {HTTPRequest:{Headers:{ContentType:[]} Method:GET Path:/api/authors/523 QueryStringParameters:map[] Cookies:map[sessionId:055CA455-1DF7-45BB-8535-4F83E7266092] Body:{Type: String: ContentType:}} HTTPResponse:{StatusCode:0 Body:{"id": 523, "name": "Author Name", "bio": "Author bio"} Cookies:map[]}}]
+Available paths: 
+=> /login
+=> /api/books/234/comments
+=> /api/books/234
+=> /api/books
+=> /api/authors/523
+Starting server on localhost:7070
+2022/01/31 13:37:08 /login (127.0.0.1)
+^C
+```
+
+### Restriction level
+
+Restriction level: `int`. The default is relaxed, i.e., only request's path will be matched, which is the current implementation.
+
 
 ## Sample mock.json file
 
@@ -141,10 +170,13 @@ Example -
 These `httpRequest.path`s will be matched and the response will be sent. E.g., if a request lands in the server in path `/api/books` the json object inside `httpResponse.body` will be sent as response. The full sample is available [here](https://github.com/AntonioSun/mockserver/blob/main/mock.json), and here is how it works:
 
 ``` sh
-curl -X POST -d "username=john&password=john" localhost:7070/login
+$ curl -X POST -d "username=john&password=john" localhost:7070/login
 <html><head><meta name=\"trackId\" content=\"19293921933\"></head><body></body</html>
 
 $ curl -L localhost:7070/api/books
+"[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]"
+
+$ curl -L 'localhost:7070/api/books?limit=9'
 "[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]"
 
 $ curl -L localhost:7070/api/books/234
@@ -183,6 +215,9 @@ GOOS=windows GOARCH=amd64 go build
 - The latest binary executables are available 
 as the result of the Continuous-Integration (CI) process.
 - I.e., they are built automatically right from the source code at every git release by [GitHub Actions](https://docs.github.com/en/actions).
+- There are two ways to get/install such binary executables
+  * Using the **binary executables** directly, or
+  * Using **packages** for your distro
 
 ### The binary executables
 

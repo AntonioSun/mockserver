@@ -4,6 +4,9 @@
 - The latest binary executables are available 
 as the result of the Continuous-Integration (CI) process.
 - I.e., they are built automatically right from the source code at every git release by [GitHub Actions](https://docs.github.com/en/actions).
+- There are two ways to get/install such binary executables
+  * Using the **binary executables** directly, or
+  * Using **packages** for your distro
 
 ### The binary executables
 
