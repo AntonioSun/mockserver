@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"log"
 	"reflect"
+	"regexp"
 
 	"github.com/valyala/fasthttp"
 )
 
 var (
 	strContentType     = []byte("Content-Type")
-	strApplicationJSON = []byte("application/json")
+	strApplicationJSON = "application/json"
 )
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
@@ -20,7 +21,13 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 			if e.Verbose >= 2 {
 				log.Println(path)
 			}
-			ctx.Response.Header.SetCanonical(strContentType, strApplicationJSON)
+			contentType := k.HTTPRequest.Body.ContentType
+			if contentType == "" {
+				contentType = strApplicationJSON
+			} else if regexp.MustCompile(`(?i)application/x-www-form-urlencoded;`).MatchString(contentType) {
+				contentType = "text/html; charset=UTF-8"
+			}
+			ctx.Response.Header.SetCanonical(strContentType, []byte(contentType))
 
 			statusCode := k.HTTPResponse.StatusCode
 			if statusCode == 0 {
