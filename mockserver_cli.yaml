@@ -9,7 +9,7 @@ Options:
   - Name: Addr
     Type: string
     Usage: Server address
-    Value: localhost:7070
+    Value: :7070
 
   - Name: Compress
     Type: bool
