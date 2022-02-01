@@ -20,6 +20,10 @@ Options:
     Usage: Mock json file location
     Value: mock.json
 
+  - Name: Prefork
+    Type: bool
+    Usage: Boost performance by prefork
+
   - Name: Restrict
     Type: int
     Usage: "Restriction level (default: relaxed)"
