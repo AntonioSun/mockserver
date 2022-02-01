@@ -22,7 +22,7 @@ With defaults -
 ```bash
 ./mockserver
 ```
-**Defaults: `MS_ADDR=localhost:7070 MS_FILE=mock.json MS_VERBOSE=1 MS_RESTRICT=0`**
+**Defaults: `MS_ADDR=:7070 MS_FILE=mock.json MS_VERBOSE=1 MS_RESTRICT=0`**
 
 
 With custom settings - 
@@ -33,7 +33,7 @@ MS_VERBOSE=2 ./mockserver
 
 Full list of custom environment settings:
 
-- **MS_ADDR**: Server address (string="localhost:7070")
+- **MS_ADDR**: Server address (string=":7070")
 - **MS_COMPRESS**: Enable transparent response compression (bool)
 - **MS_FILE**: Mock json file location (string="mock.json")
 - **MS_RESTRICT**: Restriction level (default: relaxed, only request's path will be matched) (int)
@@ -45,7 +45,6 @@ The default verbosity setting is `MS_VERBOSE=1`. It'll print all available paths
 
 ``` bash
 $ mockserver
-] {Addr:localhost:7070 Compress:false File:mock.json Verbose:1}
 ✔ Successfully opened: mock.json
 ✔ Successfully parsed: mock.json
 Available paths: 
@@ -54,7 +53,7 @@ Available paths:
 => /api/books/234
 => /api/books
 => /api/authors/523
-Starting server on localhost:7070
+Starting server on :7070
 ```
 
 To suspense the printing of available paths on program start, set `MS_VERBOSE=0`:
@@ -63,7 +62,7 @@ To suspense the printing of available paths on program start, set `MS_VERBOSE=0`
 $ MS_VERBOSE=0 mockserver
 ✔ Successfully opened: mock.json
 ✔ Successfully parsed: mock.json
-Starting server on localhost:7070
+Starting server on :7070
 ^C
 ```
 
@@ -71,7 +70,6 @@ When verbosity is `2`, it'll print a log of all requesting paths:
 
 ``` bash
 $ MS_VERBOSE=2 mockserver
-] {Addr:localhost:7070 Compress:false File:mock.json Verbose:2}
 ✔ Successfully opened: mock.json
 ✔ Successfully parsed: mock.json
 Available paths: 
@@ -80,7 +78,7 @@ Available paths:
 => /api/books/234
 => /api/books
 => /api/authors/523
-Starting server on localhost:7070
+Starting server on :7070
 2022/01/30 16:27:28 /login
 ```
 
@@ -97,7 +95,7 @@ Available paths:
 => /api/books/234
 => /api/books
 => /api/authors/523
-Starting server on localhost:7070
+Starting server on :7070
 2022/01/31 13:37:08 /login (127.0.0.1)
 ^C
 ```
@@ -152,19 +150,19 @@ These `httpRequest.path`s will be matched and the response will be sent. E.g., i
 
 ``` sh
 $ curl -X POST -d "username=john&password=john" localhost:7070/login
-<html><head><meta name=\"trackId\" content=\"19293921933\"></head><body></body</html>
+<html><head><meta name="trackId" content="19293921933"></head><body></body</html>
 
 $ curl -L localhost:7070/api/books
-"[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]"
+[{"id": 234, "title": "Book number 234"},{"id": 432, "title": "Book number 432"}]
 
-$ curl -L 'localhost:7070/api/books?limit=9'
-"[{\"id\": 234, \"title\": \"Book number 234\"},{\"id\": 432, \"title\": \"Book number 432\"}]"
+$ curl -L 'localhost:7070/api/books?limits=9'
+[{"id": 234, "title": "Book number 234"},{"id": 432, "title": "Book number 432"}]
 
 $ curl -L localhost:7070/api/books/234
-"{\"id\": 234, \"title\": \"Book number 234\", \"author\": {\"id\": 523, \"name\": \"Author Name\"}}"
+{"id": 234, "title": "Book number 234", "author": {"id": 523, "name": "Author Name"}}
 
 $ curl -L localhost:7070/api/authors/523
-"{\"id\": 523, \"name\": \"Author Name\", \"bio\": \"Author bio\"}"
+{"id": 523, "name": "Author Name", "bio": "Author bio"}
 ```
 
 Notes:
