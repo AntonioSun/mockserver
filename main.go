@@ -15,7 +15,7 @@ import (
 // Global variables definitions
 var (
 	progname = "mockserver"
-	version  = "1.0.1"
+	version  = "1.0.2"
 	date     = "2022-01-30"
 
 	e envConfig
