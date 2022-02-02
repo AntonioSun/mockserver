@@ -22,7 +22,7 @@ With defaults -
 ```bash
 ./mockserver
 ```
-**Defaults: `MS_ADDR=:7070 MS_FILE=mock.json MS_VERBOSE=1 MS_RESTRICT=0`**
+**Defaults: `MS_ADDR=:7070 MS_FILE=mock.json MS_VERBOSE=1 MS_RESTRICT=0`**, and `MS_COMPRESS` and `MS_PREFORK` will be `false` by default.
 
 
 With custom settings - 
@@ -36,6 +36,7 @@ Full list of custom environment settings:
 - **MS_ADDR**: Server address (string=":7070")
 - **MS_COMPRESS**: Enable transparent response compression (bool)
 - **MS_FILE**: Mock json file location (string="mock.json")
+- **MS_PREFORK**: Boost performance by prefork (bool)
 - **MS_RESTRICT**: Restriction level (default: relaxed, only request's path will be matched) (int)
 - **MS_VERBOSE**: Verbose mode (higher numbers increase the verbosity) (int="1")
 
@@ -103,6 +104,30 @@ Starting server on :7070
 ### Restriction level
 
 Restriction level: `int`. The default is relaxed, i.e., only request's path will be matched, which is the current implementation.
+
+### Prefork mode
+
+If somehow you need that last mile for `mockserver` to be more performant, to be [10% more faster](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=plaintext), you can enable the [prefork mode](https://pkg.go.dev/github.com/valyala/fasthttp/prefork) by setting the `MS_PREFORK` environment variable to `true`:
+
+```shell
+$ MS_PREFORK=true mockserver
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+Available paths: 
+=> /login
+=> /api/books/234/comments
+=> /api/books/234
+=> /api/books
+=> /api/authors/523
+Starting preforked server on :7070
+✔ Successfully opened: mock.json
+✔ Successfully opened: mock.json
+✔ Successfully opened: mock.json
+✔ Successfully parsed: mock.json
+. . .
+```
+
+It'll start multiple independent sub-processes, each process processes http requests independently. The number of child processes will be [the same as the  number of CPU cores](https://chowdera.com/2021/10/20211009000611119p.html) your machine has.
 
 
 ## Sample mock.json file
