@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/valyala/fasthttp/prefork"
 	"log"
 
 	"github.com/caarlos0/env"
@@ -44,10 +45,21 @@ func main() {
 		h = fasthttp.CompressHandler(h)
 	}
 
-	fmt.Println("Starting server on", e.Addr)
+	server := &fasthttp.Server{
+		Handler: h,
+	}
 
-	err = fasthttp.ListenAndServe(e.Addr, h)
-	if err != nil {
-		panic(err)
+	if e.Prefork {
+		// Wraps the server with prefork
+		fmt.Println("Starting preforked server on", e.Addr)
+		preforkServer := prefork.New(server)
+		if err = preforkServer.ListenAndServe(e.Addr); err != nil {
+			panic(err)
+		}
+	} else {
+		fmt.Println("Starting server on", e.Addr)
+		if err = server.ListenAndServe(e.Addr); err != nil {
+			panic(err)
+		}
 	}
 }
