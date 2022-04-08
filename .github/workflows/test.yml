@@ -34,7 +34,7 @@ jobs:
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-          #git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}".insteadOf "https://github.com/${GITHUB_REPOSITORY}"
+          set -v
           #cat ${HOME}/.gitconfig
           go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
           #go env | grep AntonioSun
