@@ -3,6 +3,7 @@ name: Test
 
 env:
   GO111MODULE: off
+  GOPATH: ${HOME}
 
 jobs:
   Build:
@@ -37,7 +38,7 @@ jobs:
           set -v
           #cat ${HOME}/.gitconfig
           #go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
-          go env | grep GO111MODULE
+          go env | grep -E 'GO111MODULE|GOPATH'
           #go env | grep AntonioSun
           go get -v ./...
           go test -v -race
