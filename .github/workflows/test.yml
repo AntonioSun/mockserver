@@ -1,5 +1,9 @@
 on: [push, pull_request]
 name: Test
+
+env:
+  GO111MODULE: off
+
 jobs:
   Build:
     strategy:
@@ -34,5 +38,5 @@ jobs:
           #cat ${HOME}/.gitconfig
           go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
           #go env | grep AntonioSun
-          #go get -v ./...
+          go get -v ./...
           go test -v -race
