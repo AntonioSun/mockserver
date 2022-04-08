@@ -3,7 +3,7 @@ name: Test
 
 env:
   GO111MODULE: off
-  GOPATH: /home/runner/work/
+  GOPATH: /home/runner/go
 
 jobs:
   Build:
@@ -35,10 +35,12 @@ jobs:
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-          set -v
+          go env | grep -E 'GO111MODULE|GOPATH'
+          mkdir -p $GOPATH/src/github.com/$GITHUB_ACTOR
+          mv $GITHUB_WORKSPACE $GOPATH/src/github.com/$GITHUB_ACTOR
+          ln -s $GOPATH/src/github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE
           #cat ${HOME}/.gitconfig
           #go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
-          go env | grep -E 'GO111MODULE|GOPATH'
           #go env | grep AntonioSun
           go get -v ./...
           go test -v -race
