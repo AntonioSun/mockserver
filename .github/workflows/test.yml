@@ -36,7 +36,8 @@ jobs:
       run: |
           set -v
           #cat ${HOME}/.gitconfig
-          go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
+          #go env -w GOPRIVATE=github.com/${GITHUB_REPOSITORY}
+          go env | grep GO111MODULE
           #go env | grep AntonioSun
           go get -v ./...
           go test -v -race
