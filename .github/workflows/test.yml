@@ -3,7 +3,7 @@ name: Test
 
 env:
   GO111MODULE: off
-  GOPATH: /home/runner/work
+  GOPATH: /home/runner/work/
 
 jobs:
   Build:
