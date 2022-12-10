@@ -7,11 +7,7 @@ import (
 	"reflect"
 	"regexp"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/valyala/fasthttp"
-	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
 ////////////////////////////////////////////////////////////////////////////
@@ -27,14 +23,6 @@ type ipResponse struct {
 var (
 	strContentType     = []byte("Content-Type")
 	strApplicationJSON = "application/json"
-
-	// https://prometheus.io/docs/guides/go-application/
-	r = prometheus.NewRegistry()
-	// fasthttp prometheus handler
-	fpHandler = fasthttpadaptor.NewFastHTTPHandler(promhttp.HandlerFor(r, promhttp.HandlerOpts{
-		Registry:          r,
-		EnableOpenMetrics: true,
-	}))
 )
 
 ////////////////////////////////////////////////////////////////////////////
@@ -42,13 +30,6 @@ var (
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
 	path := string(ctx.Path())
-	if regexp.MustCompile(`(?i)^/metrics`).MatchString(path) {
-		if e.Verbose >= 2 {
-			log.Println(path)
-		}
-		fpHandler(ctx)
-		return
-	}
 	for _, k := range respMap {
 		if path == k.HTTPRequest.Path {
 			if e.Verbose >= 3 {
